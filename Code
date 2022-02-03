@@ -1,0 +1,23 @@
+import http.client
+import json
+import csv
+header = ['id', 'Name', 'Area', 'Available Seasons', 'Tier']
+connection = http.client.HTTPConnection('api.football-data.org')
+headers = { 'X-Auth-Token': '445d3e4aaaa0454d8eddf2e679481897' }
+connection.request('GET', '/v2/competitions', None, headers )
+response = json.loads(connection.getresponse().read().decode())
+competitions = response['competitions']
+
+rowslist = []
+tier = input("tier")
+for x in range(len(competitions)):
+    if tier == competitions[x]['plan']:
+        print(tier)
+        list= [competitions[x]['id'], competitions[x]['name'], competitions[x]['area']['name'], competitions[x]['numberOfAvailableSeasons'],competitions[x]['plan']]
+        rowslist.append(list)
+print('done')
+
+with open('competition.csv', 'w', encoding='UTF8') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(header)
+    writer.writerows(rowslist)
